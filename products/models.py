@@ -25,6 +25,10 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def shops_with_product(self):
+        return list(Shop.objects.filter(product_info__product=self).distinct())
+
 
 class ProductInfo(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_info')
@@ -34,5 +38,23 @@ class ProductInfo(models.Model):
 
     def __str__(self):
         return f'{self.product.name} — {self.shop.name} — {self.price}'
+
+    @property
+    def total_cost(self):
+        return self.price * self.quantity
+
+class Parameter(models.Model):
+        name = models.CharField(max_length=50)
+
+        def __str__(self):
+            return self.name
+
+class ProductParameter(models.Model):
+        product_info = models.ForeignKey(ProductInfo, on_delete=models.CASCADE, related_name='parameters')
+        parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE, related_name='product_parameters')
+        value = models.CharField(max_length=100)
+
+        def __str__(self):
+            return f'{self.parameter.name}: {self.value}'
 
 

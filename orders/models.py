@@ -1,6 +1,5 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-
 from products.models import Shop, ProductInfo
 from users.models import User, Contact
 
@@ -16,7 +15,20 @@ class Order(models.Model):
     contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True, related_name='orders')
 
     def __str__(self):
-        return f'Заказ #{self.id} — {self.user.email} — {self.status}'
+        return f'Заказ: {self.id} — {self.user.email} — {self.status}'
+
+    @property
+    def total_sum(self):
+        return sum(item.total_cost for item in self.items.all())
+
+    @property
+    def total_quantity(self):
+        return sum(item.quantity for item in self.items.all())
+
+    def confirm(self, contact):
+        self.status = 'confirmed'
+        self.contact = contact
+        self.save()
 
 
 class OrderItem(models.Model):
@@ -27,3 +39,7 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'{self.product_info.product.name} x {self.quantity}'
+
+    @property
+    def total_cost(self):
+        return self.product_info.price * self.quantity

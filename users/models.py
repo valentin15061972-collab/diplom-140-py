@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+import uuid
 
 
 class User(AbstractUser):
@@ -29,3 +29,17 @@ class Contact(models.Model):
     def __str__(self):
         return f'{self.city}, {self.street}, {self.house}, {self.phone}'
 
+
+class ConfirmEmailToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='confirm_tokens')
+    token = models.CharField(max_length=64, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def generate_token(cls, user):
+        token = uuid.uuid4().hex
+        obj = cls.objects.create(user=user, token=token)
+        return obj
+
+    def __str__(self):
+        return f'{self.user.email} — {self.token[:8]}...'
