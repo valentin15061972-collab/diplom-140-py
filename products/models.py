@@ -44,17 +44,17 @@ class ProductInfo(models.Model):
         return self.price * self.quantity
 
 class Parameter(models.Model):
-        name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
 
-        def __str__(self):
+    def __str__(self):
             return self.name
 
 class ProductParameter(models.Model):
-        product_info = models.ForeignKey(ProductInfo, on_delete=models.CASCADE, related_name='parameters')
-        parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE, related_name='product_parameters')
-        value = models.CharField(max_length=100)
+    product_info = models.ForeignKey(ProductInfo, on_delete=models.CASCADE, related_name='parameters')
+    parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE, related_name='product_parameters')
+    value = models.CharField(max_length=100)
 
-        def __str__(self):
+    def __str__(self):
             return f'{self.parameter.name}: {self.value}'
 
 
