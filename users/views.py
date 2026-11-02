@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.generics import RetrieveUpdateAPIView
 from django.core.mail import send_mail
 from django.conf import settings
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ModelViewSet
 from .models import User, Contact, ConfirmEmailToken
 from .serializers import UserSerializer, UserRegisterSerializer, ContactSerializer, LoginSerializer
 
@@ -87,7 +87,7 @@ class AccountDetailsView(RetrieveUpdateAPIView):
         return self.request.user
 
 
-class ContactViewSet(ViewSet):
+class ContactViewSet(ModelViewSet):
     queryset = Contact.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ContactSerializer
