@@ -2,3 +2,4 @@ django
 djangorestframework
 pyyaml
 celery
+drf-spectacular
