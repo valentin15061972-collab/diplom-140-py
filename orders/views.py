@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from users.models import Contact
 from products.models import ProductInfo
 from .models import Order, OrderItem
+from .tasks import send_order_confirmation_email, send_invoice_to_admin
 from .serializers import (OrderSerializer, OrderDetailSerializer, BasketItemSerializer,
                           OrderConfirmSerializer, OrderStatusSerializer,)
 
@@ -92,12 +93,38 @@ class OrderListView(ListAPIView):
             return Response({'error': 'Корзина пуста.'}, status=400)
         with transaction.atomic():
             order.confirm(contact)
-
+        items_summary = self._build_items_summary(order)
+        total_sum = str(order.total_sum)
+        delivery_address = f'{contact.city}, {contact.street}, {contact.house}'
+        send_order_confirmation_email(
+            user_email=request.user.email,
+            order_id=order.id,
+            items_summary=items_summary,
+            total_sum=total_sum,
+            delivery_address=delivery_address,
+        )
+        send_invoice_to_admin(
+            order_id=order.id,
+            user_email=request.user.email,
+            items_summary=items_summary,
+            total_sum=total_sum,
+            delivery_address=delivery_address,
+        )
         return Response({
             'status': 'ok',
             'message': 'Заказ подтверждён.',
             'order_id': order.id,
         })
+
+    def _build_items_summary(self, order):
+        lines = []
+        for item in order.items.all():
+            lines.append(
+                f'  — {item.product_info.product.name} '
+                f'({item.shop.name}): {item.quantity} шт. '
+                f'по {item.product_info.price} руб.'
+            )
+        return '\n'.join(lines)
 
 
 class OrderDetailView(RetrieveAPIView):
