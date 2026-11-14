@@ -5,6 +5,7 @@ from users.models import User
 class Shop(models.Model):
     name = models.CharField(max_length=50)
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True, related_name='shop')
+    state = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
