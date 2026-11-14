@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.conf import settings
+from celery import shared_task
 
 
 def send_order_confirmation_email(user_email, order_id, items_summary, total_sum, delivery_address):
@@ -35,3 +36,12 @@ def send_invoice_to_admin(order_id, user_email, items_summary, total_sum, delive
         fail_silently=True,
     )
 
+
+
+@shared_task
+def send_order_confirmation_email_task(*args, **kwargs):
+    send_order_confirmation_email(*args, **kwargs)
+
+@shared_task
+def send_invoice_to_admin_task(*args, **kwargs):
+    send_invoice_to_admin(*args, **kwargs)
