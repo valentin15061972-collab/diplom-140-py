@@ -1,0 +1,52 @@
+shop: "Связной"
+categories:
+  - id: 1
+    name: "Смартфоны"
+  - id: 2
+    name: "Аксессуары"
+  - id: 3
+    name: "Ноутбуки"
+goods:
+  - id: 1
+    name: "iPhone 15"
+    category: 1
+    model: "Apple iPhone 15 128GB"
+    price: 79990
+    price_rrc: 89990
+    quantity: 15
+    parameters:
+      Цвет: "Чёрный"
+      Память: "128GB"
+      Экран: "6.1 дюйма"
+  - id: 2
+    name: "Samsung Galaxy S24"
+    category: 1
+    model: "Samsung Galaxy S24 256GB"
+    price: 69990
+    price_rrc: 74990
+    quantity: 10
+    parameters:
+      Цвет: "Титановый серый"
+      Память: "256GB"
+      Экран: "6.2 дюйма"
+  - id: 3
+    name: "Чехол для iPhone 15"
+    category: 2
+    model: "Silicone Case iPhone 15"
+    price: 990
+    price_rrc: 1490
+    quantity: 50
+    parameters:
+      Материал: "Силикон"
+      Цвет: "Прозрачный"
+  - id: 4
+    name: "MacBook Air M3"
+    category: 3
+    model: "Apple MacBook Air 13 M3 256GB"
+    price: 119990
+    price_rrc: 129990
+    quantity: 5
+    parameters:
+      Процессор: "M3"
+      Память: "256GB"
+      Экран: "13.6 дюйма"
