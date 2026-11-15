@@ -1,3 +1,5 @@
+"""Представления для работы с товарами, магазинами и категориями."""
+
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response

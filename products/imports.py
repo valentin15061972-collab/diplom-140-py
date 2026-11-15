@@ -1,3 +1,5 @@
+"""Функции для импорта данных о товарах из YAML/JSON."""
+
 import json
 import yaml
 from decimal import Decimal

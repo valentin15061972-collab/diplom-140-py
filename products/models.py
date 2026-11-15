@@ -1,3 +1,5 @@
+"""Модели для работы с магазинами, товарами, категориями и параметрами."""
+
 from django.db import models
 from users.models import User
 

@@ -1,4 +1,4 @@
-"""Представления для работы с заказами и корзиной."""
+"""Представления для работы с заказами и корзиной. """
 
 from django.db import transaction
 from rest_framework.views import APIView

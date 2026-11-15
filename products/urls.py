@@ -1,3 +1,5 @@
+"""URL-шаблоны для работы с товарами, магазинами и категориями."""
+
 from django.urls import path
 from .views import ShopListView, CategoryListView, ProductListView, ProductDetailView, ProductImportView
 

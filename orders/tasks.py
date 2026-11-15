@@ -1,3 +1,5 @@
+"""Задачи Celery для отправки email-уведомлений о заказах."""
+
 from django.core.mail import send_mail
 from django.conf import settings
 from celery import shared_task

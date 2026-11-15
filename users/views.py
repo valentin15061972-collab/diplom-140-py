@@ -1,3 +1,5 @@
+"""Представления для аутентификации, регистрации и управления контактами."""
+
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response

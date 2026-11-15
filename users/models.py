@@ -1,3 +1,5 @@
+"""Модели для работы с пользователями, контактами и токенами подтверждения."""
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 import uuid

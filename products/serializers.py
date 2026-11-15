@@ -1,3 +1,5 @@
+"""Сериализаторы для работы с товарами, магазинами и категориями."""
+
 from rest_framework import serializers
 from .models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter
 

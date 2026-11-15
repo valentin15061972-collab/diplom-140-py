@@ -1,3 +1,5 @@
+"""Админ-панель для управления заказами и позициями заказов."""
+
 from django.contrib import admin
 from .models import Order, OrderItem
 

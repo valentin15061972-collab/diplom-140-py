@@ -1,3 +1,5 @@
+"""Админ-панель для управления пользователями, контактами и токенами подтверждения."""
+
 from django.contrib import admin
 from .models import User, Contact, ConfirmEmailToken
 

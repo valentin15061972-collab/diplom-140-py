@@ -1,4 +1,4 @@
-"""Сериализаторы для работы с заказами и позициями заказов."""
+"""Сериализаторы для работы с заказами и позициями заказов. """
 
 from rest_framework import serializers
 from .models import Order, OrderItem

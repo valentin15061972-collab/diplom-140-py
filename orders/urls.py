@@ -1,3 +1,5 @@
+"""URL-шаблоны для работы с заказами и корзиной."""
+
 from django.urls import path
 from .views import BasketView, OrderListView, OrderDetailView, OrderStatusView
 

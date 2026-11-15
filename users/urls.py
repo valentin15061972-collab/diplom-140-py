@@ -1,3 +1,5 @@
+"""URL-шаблоны для аутентификации, регистрации и управления контактами."""
+
 from django.urls import path
 from rest_framework import routers
 

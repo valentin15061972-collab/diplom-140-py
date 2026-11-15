@@ -1,3 +1,5 @@
+"""Админ-панель для управления товарами, магазинами и категориями."""
+
 from django.contrib import admin
 from .models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter
 
