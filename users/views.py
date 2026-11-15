@@ -1,6 +1,7 @@
 """Представления для аутентификации, регистрации и управления контактами."""
 
 from django.contrib.auth import authenticate
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -31,8 +32,8 @@ class RegisterAccountView(APIView):
             return Response({
                 'status': 'ok',
                 'message': 'Письмо отправлено на ваш email.',
-            }, status=201)
-        return Response(serializer.errors, status=400)
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ConfirmAccountView(APIView):
@@ -42,16 +43,16 @@ class ConfirmAccountView(APIView):
         email = request.data.get('email')
         token = request.data.get('token')
         if not email or not token:
-            return Response({'error': 'Необходимо указать email и token.'}, status=400,)
+            return Response({'error': 'Необходимо указать email и token.'}, status=status.HTTP_400_BAD_REQUEST,)
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return Response({'error': 'Пользователь не найден.'}, status=400)
+            return Response({'error': 'Пользователь не найден.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             token_obj = ConfirmEmailToken.objects.get(user=user, token=token)
         except ConfirmEmailToken.DoesNotExist:
-            return Response({'error': 'Неверный токен.'}, status=400)
+            return Response({'error': 'Неверный токен.'}, status=status.HTTP_400_BAD_REQUEST)
 
         user.is_active = True
         user.save()
@@ -77,8 +78,8 @@ class LoginAccountView(APIView):
                     'token': token,
                 })
             return Response(
-                {'error': 'Неверный email или пароль, либо аккаунт не активирован.'}, status=400,)
-        return Response(serializer.errors, status=400)
+                {'error': 'Неверный email или пароль, либо аккаунт не активирован.'}, status=status.HTTP_400_BAD_REQUEST,)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountDetailsView(RetrieveUpdateAPIView):

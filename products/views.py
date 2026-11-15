@@ -1,5 +1,5 @@
 """Представления для работы с товарами, магазинами и категориями."""
-
+from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -48,17 +48,17 @@ class ProductImportView(APIView):
 
     def post(self, request, *args, **kwargs):
         if request.user.type != 'shop':
-            return Response({'error': 'Импорт доступен только для магазинов-поставщиков.'}, status=403,)
+            return Response({'error': 'Импорт доступен только для магазинов-поставщиков.'}, status=status.HTTP_400_BAD_REQUEST,)
         file_obj = request.FILES.get('file')
         if not file_obj:
-            return Response({'error': 'Файл не передан.'}, status=400)
+            return Response({'error': 'Файл не передан.'}, status=status.HTTP_400_BAD_REQUEST)
         shop_name = None
         if hasattr(request.user, 'shop') and request.user.shop:
             shop_name = request.user.shop.name
         try:
             result = import_from_uploaded_file(file_obj, shop_name)
         except Exception as e:
-            return Response({'error': str(e)}, status=400)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response({
             'status': 'ok',
             'created': result['created'],

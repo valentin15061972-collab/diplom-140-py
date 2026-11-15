@@ -1,6 +1,7 @@
 """Представления для работы с заказами и корзиной. """
 
 from django.db import transaction
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -24,15 +25,15 @@ class BasketView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = BasketItemSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         product_info_id = serializer.validated_data['product_info_id']
         quantity = serializer.validated_data['quantity']
         try:
             product_info = ProductInfo.objects.select_related('shop', 'product').get(id=product_info_id)
         except ProductInfo.DoesNotExist:
-            return Response({'error': 'Товар не найден.'}, status=404)
+            return Response({'error': 'Товар не найден.'}, status=status.HTTP_400_BAD_REQUEST)
         if product_info.quantity < quantity:
-            return Response({'error': f'Недостаточно товара. Доступно: {product_info.quantity}.'}, status=400,)
+            return Response({'error': f'Недостаточно товара. Доступно: {product_info.quantity}.'}, status=status.HTTP_400_BAD_REQUEST,)
         order = self.get_or_create_basket(request.user)
         order_item, created = OrderItem.objects.get_or_create(
             order=order,
@@ -49,13 +50,13 @@ class BasketView(APIView):
     def delete(self, request, *args, **kwargs):
         serializer = BasketItemSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         product_info_id = serializer.validated_data['product_info_id']
         order = self.get_or_create_basket(request.user)
         try:
             order_item = OrderItem.objects.get(order=order, product_info_id=product_info_id,)
         except OrderItem.DoesNotExist:
-            return Response({'error': 'Товар не найден в корзине.'}, status=404)
+            return Response({'error': 'Товар не найден в корзине.'}, status=status.HTTP_400_BAD_REQUEST)
         quantity_to_remove = serializer.validated_data['quantity']
         if order_item.quantity <= quantity_to_remove:
             order_item.delete()
@@ -81,18 +82,18 @@ class OrderListView(ListAPIView):
     def post(self, request, *args, **kwargs):
         serializer = OrderConfirmSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         contact_id = serializer.validated_data['contact_id']
         try:
             contact = Contact.objects.get(id=contact_id, user=request.user)
         except Contact.DoesNotExist:
-            return Response({'error': 'Адрес доставки не найден.'}, status=404)
+            return Response({'error': 'Адрес доставки не найден.'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             order = Order.objects.get(user=request.user, status='new')
         except Order.DoesNotExist:
-            return Response({'error': 'Корзина пуста.'}, status=400)
+            return Response({'error': 'Корзина пуста.'}, status=status.HTTP_400_BAD_REQUEST)
         if not order.items.exists():
-            return Response({'error': 'Корзина пуста.'}, status=400)
+            return Response({'error': 'Корзина пуста.'}, status=status.HTTP_400_BAD_REQUEST)
         with transaction.atomic():
             order.confirm(contact)
         items_summary = self._build_items_summary(order)
@@ -144,16 +145,16 @@ class OrderStatusView(APIView):
         if request.user.type != 'shop' and not request.user.is_staff:
             return Response(
                 {'error': 'Изменение статуса доступно только магазинам.'},
-                status=403,
+                status=status.HTTP_400_BAD_REQUEST,
             )
         try:
             order = Order.objects.get(id=pk)
         except Order.DoesNotExist:
-            return Response({'error': 'Заказ не найден.'}, status=404)
+            return Response({'error': 'Заказ не найден.'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = OrderStatusSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         order.status = serializer.validated_data['status']
         order.save()
