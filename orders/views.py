@@ -56,7 +56,7 @@ class BasketView(APIView):
         try:
             order_item = OrderItem.objects.get(order=order, product_info_id=product_info_id,)
         except OrderItem.DoesNotExist:
-            return Response({'error': 'Товар не найден в корзине.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Товар не найден в корзине.'}, status=status.HTTP_404_NOT_FOUND)
         quantity_to_remove = serializer.validated_data['quantity']
         if order_item.quantity <= quantity_to_remove:
             order_item.delete()
@@ -145,12 +145,12 @@ class OrderStatusView(APIView):
         if request.user.type != 'shop' and not request.user.is_staff:
             return Response(
                 {'error': 'Изменение статуса доступно только магазинам.'},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=status.HTTP_403_FORBIDDEN,
             )
         try:
             order = Order.objects.get(id=pk)
         except Order.DoesNotExist:
-            return Response({'error': 'Заказ не найден.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Заказ не найден.'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = OrderStatusSerializer(data=request.data)
         if not serializer.is_valid():

@@ -48,7 +48,7 @@ class ProductImportView(APIView):
 
     def post(self, request, *args, **kwargs):
         if request.user.type != 'shop':
-            return Response({'error': 'Импорт доступен только для магазинов-поставщиков.'}, status=status.HTTP_400_BAD_REQUEST,)
+            return Response({'error': 'Импорт доступен только для магазинов-поставщиков.'}, status=status.HTTP_403_FORBIDDEN,)
         file_obj = request.FILES.get('file')
         if not file_obj:
             return Response({'error': 'Файл не передан.'}, status=status.HTTP_400_BAD_REQUEST)
