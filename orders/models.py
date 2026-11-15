@@ -1,3 +1,5 @@
+"""Модели для работы заказов и позиций заказа."""
+
 from django.core.validators import MinValueValidator
 from django.db import models
 from products.models import Shop, ProductInfo
