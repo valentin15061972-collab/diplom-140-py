@@ -6,6 +6,7 @@ from celery import shared_task
 
 
 def send_order_confirmation_email(user_email, order_id, items_summary, total_sum, delivery_address):
+    """Отправка email клиенту с подтверждением заказа."""
     message = (
         f"Ваш заказ: {order_id} принят.\n"
         f"Состав заказа:\n{items_summary}\n"
@@ -22,6 +23,7 @@ def send_order_confirmation_email(user_email, order_id, items_summary, total_sum
 
 
 def send_invoice_to_admin(order_id, user_email, items_summary, total_sum, delivery_address):
+    """Отправка накладной на email администратора."""
     admin_email = getattr(settings, 'ADMIN_EMAIL', settings.DEFAULT_FROM_EMAIL)
     message = (
         f"Новая накладная для исполнения заказа: {order_id}\n"
