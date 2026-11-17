@@ -1,5 +1,7 @@
-django
-djangorestframework
-pyyaml
-celery
-drf-spectacular
+django==6.1.2
+djangorestframework==3.18.3
+PyYAML==6.0.3
+celery==5.7.0
+drf-spectacular==0.30.0
+django-filter==26.2
+django_celery_results==2.6.0
