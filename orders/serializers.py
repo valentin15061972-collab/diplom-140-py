@@ -6,6 +6,7 @@ from users.serializers import ContactSerializer
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    """Сериализатор позиции заказа."""
     product_name = serializers.CharField(source='product_info.product.name', read_only=True)
     shop_name = serializers.CharField(source='shop.name', read_only=True)
     price = serializers.DecimalField(source='product_info.price', max_digits=10, decimal_places=2, read_only=True)
@@ -21,6 +22,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    """Сериализатор списка заказов."""
     total_sum = serializers.SerializerMethodField()
     total_quantity = serializers.SerializerMethodField()
 
@@ -37,6 +39,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
+    """Сериализатор детальной информации о заказе."""
     items = OrderItemSerializer(many=True, read_only=True)
     contact = ContactSerializer(read_only=True)
     total_sum = serializers.SerializerMethodField()
@@ -54,13 +57,16 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
 
 class BasketItemSerializer(serializers.Serializer):
+    """Сериализатор для добавления товара в корзину."""
     product_info_id = serializers.IntegerField(required=True)
     quantity = serializers.IntegerField(min_value=1, default=1)
 
 
 class OrderConfirmSerializer(serializers.Serializer):
+    """Сериализатор для подтверждения заказа."""
     contact_id = serializers.IntegerField(required=True)
 
 
 class OrderStatusSerializer(serializers.Serializer):
+    """Сериализатор для изменения статуса заказа."""
     status = serializers.ChoiceField(choices=Order.STATUS_CHOICES)
