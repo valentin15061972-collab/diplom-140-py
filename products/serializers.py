@@ -40,6 +40,7 @@ class ProductInfoSerializer(serializers.ModelSerializer):
 
 
 class ProductListSerializer(serializers.ModelSerializer):
+    """Сериализатор для списка товаров."""
     category = serializers.StringRelatedField()
     shops = serializers.SerializerMethodField()
 
@@ -53,6 +54,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
+    """Сериализатор детальной информации о товаре."""
     category = serializers.StringRelatedField()
     product_info = ProductInfoSerializer(many=True, read_only=True)
 
