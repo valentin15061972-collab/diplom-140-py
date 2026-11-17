@@ -6,6 +6,7 @@ from .models import User, Contact
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор пользователя."""
     contacts = serializers.SerializerMethodField()
 
     class Meta:
@@ -18,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
+    """Сериализатор регистрации."""
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
 
@@ -42,7 +44,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 class ContactSerializer(serializers.ModelSerializer):
-
+    """Сериализатор контактов (адресов доставки)."""
     class Meta:
         model = Contact
         fields = '__all__'
@@ -54,5 +56,6 @@ class ContactSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
+    """Сериализатор авторизации."""
     email = serializers.EmailField(required=True)
     password = serializers.CharField(required=True)
