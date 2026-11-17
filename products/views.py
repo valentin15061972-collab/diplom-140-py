@@ -11,18 +11,21 @@ from .serializers import ShopSerializer, CategorySerializer, ProductListSerializ
 
 
 class ShopListView(ListAPIView):
+    """Список магазинов."""
     queryset = Shop.objects.filter(state=True)
     serializer_class = ShopSerializer
     permission_classes = [IsAuthenticated]
 
 
 class CategoryListView(ListAPIView):
+    """Список категорий."""
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
 
 
 class ProductListView(ListAPIView):
+    """Список товаров с фильтрацией."""
     serializer_class = ProductListSerializer
     permission_classes = [IsAuthenticated]
     filterset_fields = ['category', 'category__shops']
@@ -38,12 +41,14 @@ class ProductListView(ListAPIView):
 
 
 class ProductDetailView(RetrieveAPIView):
+    """Детальная информация о товаре."""
     queryset = Product.objects.prefetch_related('product_info__parameters', 'product_info__shop')
     serializer_class = ProductDetailSerializer
     permission_classes = [IsAuthenticated]
 
 
 class ProductImportView(APIView):
+    """Импорт товаров из файла для магазинов-поставщиков."""
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -52,7 +57,7 @@ class ProductImportView(APIView):
         file_obj = request.FILES.get('file')
         if not file_obj:
             return Response({'error': 'Файл не передан.'}, status=status.HTTP_400_BAD_REQUEST)
-        shop_name = None
+        shop_name = None  # Определяем имя магазина по пользователю
         if hasattr(request.user, 'shop') and request.user.shop:
             shop_name = request.user.shop.name
         try:
