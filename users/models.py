@@ -6,13 +6,11 @@ import uuid
 
 
 class User(AbstractUser):
-
+    """Модель пользователя с поддержкой ролей."""
     USER_TYPE = [('buyer', 'покупатель'), ('shop', 'магазин-поставщик')]
-
     email = models.EmailField(unique=True)
     company = models.CharField(max_length=50, blank=True)
     type = models.CharField(max_length=10, choices=USER_TYPE, default='buyer')
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
@@ -21,6 +19,7 @@ class User(AbstractUser):
 
 
 class Contact(models.Model):
+    """Адрес доставки пользователя."""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contacts')
     city = models.CharField(max_length=50)
     street = models.CharField(max_length=100)
@@ -33,6 +32,7 @@ class Contact(models.Model):
 
 
 class ConfirmEmailToken(models.Model):
+    """Токен подтверждения email при регистрации."""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='confirm_tokens')
     token = models.CharField(max_length=64, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
