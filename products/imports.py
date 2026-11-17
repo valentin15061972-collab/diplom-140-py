@@ -7,13 +7,19 @@ from .models import Shop, Category, Product, ProductInfo, Parameter, ProductPara
 
 
 def import_from_dict(data, shop_name):
+    """
+       Импортирует товары из словаря data в магазин shop_name.
+       Возвращает словарь с результатами импорта.
+    """
     result = {'created': 0, 'updated': 0, 'errors': [],}
     shop, _ = Shop.objects.get_or_create(name=shop_name)
+    # Импорт категорий
     categories_map = {}
     for cat_data in data.get('categories', []):
         cat, created = Category.objects.get_or_create(name=cat_data['name'],)
         cat.shops.add(shop)
         categories_map[cat_data['id']] = cat
+    # Импорт товаров
     for good in data.get('goods', []):
         try:
             category = categories_map.get(good.get('category'))
@@ -37,6 +43,7 @@ def import_from_dict(data, shop_name):
                 result['created'] += 1
             else:
                 result['updated'] += 1
+            # Импорт параметров
             for param_name, param_value in good.get('parameters', {}).items():
                 param, _ = Parameter.objects.get_or_create(name=param_name)
                 ProductParameter.objects.update_or_create(
@@ -50,6 +57,9 @@ def import_from_dict(data, shop_name):
 
 
 def import_from_file(file_path, shop_name):
+    """
+    Импорт товаров из файла. Поддерживаются форматы YAML и JSON.
+    """
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
     if file_path.endswith('.yaml') or file_path.endswith('.yml'):
@@ -64,6 +74,9 @@ def import_from_file(file_path, shop_name):
 
 
 def import_from_uploaded_file(file_obj, shop_name):
+    """
+    Импорт товаров из загруженного файла.
+    """
     content = file_obj.read().decode('utf-8')
     filename = getattr(file_obj, 'name', '')
     if filename.endswith('.yaml') or filename.endswith('.yml'):
