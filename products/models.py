@@ -5,6 +5,7 @@ from users.models import User
 
 
 class Shop(models.Model):
+    """Модель магазина."""
     name = models.CharField(max_length=50)
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True, related_name='shop')
     state = models.BooleanField(default=True)
@@ -14,6 +15,7 @@ class Shop(models.Model):
 
 
 class Category(models.Model):
+    """Категория товаров."""
     name = models.CharField(max_length=50)
     shops = models.ManyToManyField(Shop, related_name='categories', blank=True)
 
@@ -22,6 +24,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    """Товар."""
     name = models.CharField(max_length=100)
     category = models.ForeignKey(Category,on_delete=models.CASCADE, related_name='products')
 
@@ -30,10 +33,12 @@ class Product(models.Model):
 
     @property
     def shops_with_product(self):
+        """Возвращает список магазинов, где есть товар."""
         return list(Shop.objects.filter(product_info__product=self).distinct())
 
 
 class ProductInfo(models.Model):
+    """Информация о товаре в конкретном магазине."""
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_info')
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='product_info')
     quantity = models.PositiveIntegerField()
@@ -44,15 +49,18 @@ class ProductInfo(models.Model):
 
     @property
     def total_cost(self):
+        """Общая стоимость всех единиц товара."""
         return self.price * self.quantity
 
 class Parameter(models.Model):
+    """характеристика товара."""
     name = models.CharField(max_length=50)
 
     def __str__(self):
             return self.name
 
 class ProductParameter(models.Model):
+    """Значение параметра для конкретного товара в магазине."""
     product_info = models.ForeignKey(ProductInfo, on_delete=models.CASCADE, related_name='parameters')
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE, related_name='product_parameters')
     value = models.CharField(max_length=100)
