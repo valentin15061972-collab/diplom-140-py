@@ -80,16 +80,3 @@ PUT /api/orders/{id}/status (Изменение статуса заказа)
 - Celery (асинхронные задачи)
 - SQLite (разработка)
 
-## Структура проекта
-
-```
-Diplom_140_py/
-├── backend/          # Настройки проекта
-├── users/            # Модели и API пользователей
-├── products/         # Модели и API товаров, импорт
-├── orders/           # Модели и API заказов, корзина
-├── manage.py
-├── requirements.txt
-├── README.md
-└── sample_import.yaml # Пример файла импорта
-```
