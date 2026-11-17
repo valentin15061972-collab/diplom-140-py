@@ -15,14 +15,17 @@ from .serializers import (OrderSerializer, OrderDetailSerializer, BasketItemSeri
 
 
 class BasketView(APIView):
+    """Корзина пользователя — добавление, удаление товаров, просмотр."""
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
+        """Просмотр содержимого корзины (заказ со статусом 'new')."""
         order = self.get_or_create_basket(request.user)
         serializer = OrderDetailSerializer(order)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+        """Добавление товара в корзину."""
         serializer = BasketItemSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -48,6 +51,7 @@ class BasketView(APIView):
         return Response({'status': 'ok', 'message': 'Товар добавлен в корзину.'})
 
     def delete(self, request, *args, **kwargs):
+        """Удаление товара из корзины."""
         serializer = BasketItemSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -66,11 +70,13 @@ class BasketView(APIView):
         return Response({'status': 'ok', 'message': 'Товар удалён из корзины.'})
 
     def get_or_create_basket(self, user):
+        """Получить или создать корзину (заказ со статусом 'new')."""
         order, _ = Order.objects.get_or_create(user=user, status='new',)
         return order
 
 
 class OrderListView(ListAPIView):
+    """Список заказов пользователя."""
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
     ordering_fields = ['created_at', 'status']
@@ -80,6 +86,7 @@ class OrderListView(ListAPIView):
         return Order.objects.filter(user=self.request.user).exclude(status='new').prefetch_related('items')
 
     def post(self, request, *args, **kwargs):
+        """Подтверждение заказа — перевод из корзины в заказ."""
         serializer = OrderConfirmSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -99,6 +106,7 @@ class OrderListView(ListAPIView):
         items_summary = self._build_items_summary(order)
         total_sum = str(order.total_sum)
         delivery_address = f'{contact.city}, {contact.street}, {contact.house}'
+        # Отправляем email клиенту
         send_order_confirmation_email(
             user_email=request.user.email,
             order_id=order.id,
@@ -106,6 +114,7 @@ class OrderListView(ListAPIView):
             total_sum=total_sum,
             delivery_address=delivery_address,
         )
+        # Отправляем накладную администратору
         send_invoice_to_admin(
             order_id=order.id,
             user_email=request.user.email,
@@ -131,6 +140,7 @@ class OrderListView(ListAPIView):
 
 
 class OrderDetailView(RetrieveAPIView):
+    """Детальная информация о заказе."""
     serializer_class = OrderDetailSerializer
     permission_classes = [IsAuthenticated]
 
@@ -139,9 +149,11 @@ class OrderDetailView(RetrieveAPIView):
 
 
 class OrderStatusView(APIView):
+    """Редактирование статуса заказа."""
     permission_classes = [IsAuthenticated]
 
     def put(self, request, pk, *args, **kwargs):
+        # Статус может менять только магазин-поставщик или админ
         if request.user.type != 'shop' and not request.user.is_staff:
             return Response(
                 {'error': 'Изменение статуса доступно только магазинам.'},
