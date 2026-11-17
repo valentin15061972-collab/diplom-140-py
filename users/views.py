@@ -15,6 +15,7 @@ from .serializers import UserSerializer, UserRegisterSerializer, ContactSerializ
 
 
 class RegisterAccountView(APIView):
+    """Регистрация нового пользователя."""
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
@@ -22,6 +23,7 @@ class RegisterAccountView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             token_obj = ConfirmEmailToken.generate_token(user)
+            # Отправляем email с токеном подтверждения
             send_mail(
                 subject='Подтверждение регистрации',
                 message=f'Ваш токен подтверждения: {token_obj.token}',
@@ -37,6 +39,7 @@ class RegisterAccountView(APIView):
 
 
 class ConfirmAccountView(APIView):
+    """Подтверждение регистрации по токену."""
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
@@ -61,6 +64,7 @@ class ConfirmAccountView(APIView):
 
 
 class LoginAccountView(APIView):
+    """Авторизация пользователя (получение токена)."""
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
@@ -78,11 +82,13 @@ class LoginAccountView(APIView):
                     'token': token,
                 })
             return Response(
-                {'error': 'Неверный email или пароль, либо аккаунт не активирован.'}, status=status.HTTP_400_BAD_REQUEST,)
+                {'error': 'Неверный email или пароль, либо аккаунт не активирован.'},
+                      status=status.HTTP_400_BAD_REQUEST,)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountDetailsView(RetrieveUpdateAPIView):
+    """Получение и обновление данных пользователя."""
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
@@ -91,6 +97,7 @@ class AccountDetailsView(RetrieveUpdateAPIView):
 
 
 class ContactViewSet(ModelViewSet):
+    """Управление адресами доставки."""
     queryset = Contact.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ContactSerializer
