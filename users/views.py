@@ -110,5 +110,5 @@ class ContactDetailView(RetrieveUpdateDestroyAPIView):
         """Удаление одного адреса доставки по ID."""
         contact = self.get_queryset().get(pk=kwargs['pk'])
         contact.delete()
-        return Response({'status': 'deleted'}, status=204)
+        return Response({'status': 'deleted'}, status=status.HTTP_204_NO_CONTENT)
 
