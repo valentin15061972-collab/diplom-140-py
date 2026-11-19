@@ -75,10 +75,10 @@ class LoginAccountView(APIView):
                 password=serializer.validated_data['password'],
             )
             if user and user.is_active:
-                token = Token.objects.get_or_create(user=user)
+                token, _ = Token.objects.get_or_create(user=user)
                 return Response({
                     'status': 'ok',
-                    'token': token,
+                    'token': token.key,
                 })
             return Response(
                 {'error': 'Неверный email или пароль, либо аккаунт не активирован.'},
@@ -106,7 +106,7 @@ class ContactDetailView(RetrieveUpdateDestroyAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    def delete(self, request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         """Удаление одного адреса доставки по ID."""
         contact = self.get_queryset().get(pk=kwargs['pk'])
         contact.delete()
