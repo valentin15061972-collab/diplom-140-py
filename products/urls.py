@@ -10,5 +10,5 @@ urlpatterns = [
     path('categories', CategoryListView.as_view()),
     path('list_prods', ProductListView.as_view()),
     path('<int:pk>', ProductDetailView.as_view()),
-    path('import', ProductImportView.as_view()),
+    path('importer', ProductImportView.as_view()),
 ]
