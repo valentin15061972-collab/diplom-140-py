@@ -11,5 +11,5 @@ urlpatterns = [
     path('register/confirm', ConfirmAccountView.as_view()),
     path('login', LoginAccountView.as_view()),
     path('details', AccountDetailsView.as_view()),
-    path('contact', ContactDetailView.as_view()),
+    path('contacts', ContactDetailView.as_view()),
 ]
