@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from users.models import Contact
 from products.models import ProductInfo
 from .models import Order, OrderItem
-from .tasks import send_order_confirmation_email, send_invoice_to_admin
+from .tasks import send_order_confirmation_email_task, send_invoice_to_admin_task
 from .serializers import (OrderSerializer, OrderDetailSerializer, BasketItemSerializer,
                           OrderConfirmSerializer, OrderStatusSerializer,)
 
@@ -106,16 +106,16 @@ class OrderListView(ListAPIView):
         items_summary = self._build_items_summary(order)
         total_sum = str(order.total_sum)
         delivery_address = f'{contact.city}, {contact.street}, {contact.house}'
-        # Отправляем email клиенту
-        send_order_confirmation_email(
+        # Отправляем email клиенту (асинхронно через Celery)
+        send_order_confirmation_email_task.delay(
             user_email=request.user.email,
             order_id=order.id,
             items_summary=items_summary,
             total_sum=total_sum,
             delivery_address=delivery_address,
         )
-        # Отправляем накладную администратору
-        send_invoice_to_admin(
+        # Отправляем накладную администратору (асинхронно через Celery)
+        send_invoice_to_admin_task.delay(
             order_id=order.id,
             user_email=request.user.email,
             items_summary=items_summary,
