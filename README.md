@@ -50,7 +50,7 @@ GET /api/products/shops (Список магазинов)
 GET /api/products/categories (Список категорий)
 GET /api/products/list_prods (Список товаров (с фильтрами))
 GET /api/products/{id} (Детальная информация о товаре)
-POST /api/products/import (Импорт товаров (магазин-поставщик))
+POST /api/products/importer (Импорт товаров (магазин-поставщик))
 
  # Заказы
 GET /api/orders/basket (Просмотр корзины)
