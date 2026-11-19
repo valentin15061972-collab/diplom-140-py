@@ -8,7 +8,7 @@ from .views import ShopListView, CategoryListView, ProductListView, ProductDetai
 urlpatterns = [
     path('shops', ShopListView.as_view()),
     path('categories', CategoryListView.as_view()),
-    path('products', ProductListView.as_view()),
+    path('list_prods', ProductListView.as_view()),
     path('<int:pk>', ProductDetailView.as_view()),
     path('import', ProductImportView.as_view()),
 ]
