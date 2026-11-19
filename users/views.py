@@ -6,10 +6,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from django.core.mail import send_mail
 from django.conf import settings
-from rest_framework.viewsets import ModelViewSet
 from .models import User, Contact, ConfirmEmailToken
 from .serializers import UserSerializer, UserRegisterSerializer, ContactSerializer, LoginSerializer
 
@@ -96,8 +95,20 @@ class AccountDetailsView(RetrieveUpdateAPIView):
         return self.request.user
 
 
-class ContactViewSet(ModelViewSet):
+class ContactDetailView(RetrieveUpdateDestroyAPIView):
     """Управление адресами доставки."""
-    queryset = Contact.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ContactSerializer
+
+    def get_queryset(self):
+        return Contact.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        """Удаление одного адреса доставки по ID."""
+        contact = self.get_queryset().get(pk=kwargs['pk'])
+        contact.delete()
+        return Response({'status': 'deleted'}, status=204)
+
