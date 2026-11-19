@@ -48,7 +48,7 @@ GET/POST/DELETE /api/users/contacts (Адреса доставки)
  # Товары
 GET /api/products/shops (Список магазинов)
 GET /api/products/categories (Список категорий)
-GET /api/products/products (Список товаров (с фильтрами))
+GET /api/products/list_prods (Список товаров (с фильтрами))
 GET /api/products/{id} (Детальная информация о товаре)
 POST /api/products/import (Импорт товаров (магазин-поставщик))
 
@@ -56,8 +56,8 @@ POST /api/products/import (Импорт товаров (магазин-пост�
 GET /api/orders/basket (Просмотр корзины)
 POST /api/orders/basket (Добавить товар в корзину)
 DELETE /api/orders/basket (Удалить товар из корзины)
-GET /api/orders/orders (Список заказов)
-POST /api/orders/orders (Подтверждение заказа)
+GET /api/orders/list_orders (Список заказов)
+POST /api/orders/list_orders (Подтверждение заказа)
 GET /api/orders/{id} (Детали заказа)
 PUT /api/orders/{id}/status (Изменение статуса заказа)
 
